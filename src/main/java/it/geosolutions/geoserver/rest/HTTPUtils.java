@@ -52,6 +52,8 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import it.geosolutions.geoserver.rest.patch.GeoserverStringRequestEntity;
+
 /**
  * Low level HTTP utilities.
  */
@@ -226,7 +228,7 @@ public class HTTPUtils {
      */
     public static String post(String url, String content, String contentType, String username, String pw) {
         try {
-            return post(url, new StringRequestEntity(content, contentType, null), username, pw);
+            return post(url, new GeoserverStringRequestEntity(content, contentType), username, pw);
         } catch (UnsupportedEncodingException ex) {
             LOGGER.error("Cannot POST " + url, ex);
             return null;
