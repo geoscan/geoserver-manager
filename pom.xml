@@ -28,7 +28,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>it.geosolutions</groupId>
+    <groupId>aero.geoscan</groupId>
     <artifactId>geoserver-manager</artifactId>
     <version>1.7-SNAPSHOT</version>
 
