@@ -710,7 +710,7 @@ public class GeoServerRESTStyleManager extends GeoServerRESTAbstractManager {
 
         sUrl.append("/styles");
         if ( name != null && !name.isEmpty()) {
-            sUrl.append("?name=").append(URLEncoder.encode(name));
+            sUrl.append("?raw=true&name=").append(URLEncoder.encode(name));
         }
         return sUrl.toString();
     }
