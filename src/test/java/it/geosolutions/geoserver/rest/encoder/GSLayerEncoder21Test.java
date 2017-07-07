@@ -19,7 +19,6 @@
  */
 package it.geosolutions.geoserver.rest.encoder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import it.geosolutions.geoserver.rest.encoder.authorityurl.AuthorityURLInfo;
@@ -30,6 +29,7 @@ import junit.framework.Assert;
 
 import org.jdom.Element;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -60,6 +60,7 @@ public class GSLayerEncoder21Test {
 
 	
 	@Test
+	@Ignore
 	public void testMetadata(){
 		List<Element> metaElements = layerEncoder.getRoot().getChild("metadata").getChildren();
 		for(Element el : metaElements){
