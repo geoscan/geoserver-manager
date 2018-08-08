@@ -1055,6 +1055,13 @@ public class GeoServerRESTPublisher {
                 UploadMethod.FILE, zipFile.toURI(), DEFAULT_CRS, null);
     }
 
+    public boolean publishShp(String workspace, String storeName, NameValuePair[] storeParams,
+            String datasetName, UploadMethod method, URI shapefile, String srs, String nativeCRS,
+            ProjectionPolicy policy, String defaultStyle) throws FileNotFoundException,
+            IllegalArgumentException {
+        return publishShp(workspace, storeName, storeParams, datasetName, method, shapefile, srs, nativeCRS, policy, defaultStyle, datasetName);
+    }
+
     /**
      * Publish a shapefile.
      * 
@@ -1085,7 +1092,7 @@ public class GeoServerRESTPublisher {
      */
     public boolean publishShp(String workspace, String storeName, NameValuePair[] storeParams,
             String datasetName, UploadMethod method, URI shapefile, String srs, String nativeCRS,
-            ProjectionPolicy policy, String defaultStyle) throws FileNotFoundException,
+            ProjectionPolicy policy, String defaultStyle, String layerName) throws FileNotFoundException,
             IllegalArgumentException {
         if (workspace == null || storeName == null || shapefile == null || datasetName == null
                 || policy == null) {
@@ -1142,7 +1149,7 @@ public class GeoServerRESTPublisher {
         // config coverage props (srs)
         final GSFeatureTypeEncoder featureTypeEncoder = new GSFeatureTypeEncoder();
         featureTypeEncoder.setName(datasetName);
-        featureTypeEncoder.setTitle(datasetName);
+        featureTypeEncoder.setTitle(layerName);
         // set destination srs
         if (!srsNull) {
             featureTypeEncoder.setSRS(srs);
