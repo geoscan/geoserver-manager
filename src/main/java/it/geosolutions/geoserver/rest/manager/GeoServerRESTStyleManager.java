@@ -243,8 +243,9 @@ public class GeoServerRESTStyleManager extends GeoServerRESTAbstractManager {
         }
 
         String sUrl = buildPostUrl(null, name);
+        String contentType = getContentType(sldBody);
 
-        final String result = HTTPUtils.post(sUrl, sldBody, "application/vnd.ogc.sld+xml", gsuser, gspass);
+        final String result = HTTPUtils.post(sUrl, sldBody, contentType, gsuser, gspass);
         return result != null;
     }
 
@@ -269,8 +270,9 @@ public class GeoServerRESTStyleManager extends GeoServerRESTAbstractManager {
      */
     public boolean publishStyle(File sldFile, String name) {
         String sUrl = buildPostUrl(null, name);
+        String contentType = getContentType(sldFile);
         LOGGER.debug("POSTing new style " + name + " to " + sUrl);
-        String result = HTTPUtils.post(sUrl, sldFile, GeoServerRESTPublisher.Format.SLD.getContentType(), gsuser, gspass);
+        String result = HTTPUtils.post(sUrl, sldFile, contentType, gsuser, gspass);
         return result != null;
     }
     
@@ -297,10 +299,7 @@ public class GeoServerRESTStyleManager extends GeoServerRESTAbstractManager {
         
         StringBuilder sUrl = new StringBuilder(buildPostUrl(null, name));
         Util.appendParameter(sUrl, "raw", ""+raw);
-        String contentType = GeoServerRESTPublisher.Format.SLD.getContentType();
-        if(!this.checkSLD10Version(sldBody)){
-            contentType = GeoServerRESTPublisher.Format.SLD_1_1_0.getContentType();
-        }
+        String contentType = getContentType(sldBody);
         LOGGER.debug("POSTing new style " + name + " to " + sUrl + " using version: " + contentType);
         String result = HTTPUtils.post(sUrl.toString(), sldBody, contentType, gsuser, gspass);
         return result != null;
@@ -325,10 +324,7 @@ public class GeoServerRESTStyleManager extends GeoServerRESTAbstractManager {
          */
         StringBuilder sUrl = new StringBuilder(buildPostUrl(null, name));
         Util.appendParameter(sUrl, "raw", ""+raw);
-        String contentType = GeoServerRESTPublisher.Format.SLD.getContentType();
-        if(!this.checkSLD10Version(sldFile)){
-            contentType = GeoServerRESTPublisher.Format.SLD_1_1_0.getContentType();
-        }
+        String contentType = getContentType(sldFile);
         LOGGER.debug("POSTing new style " + name + " to " + sUrl + " using version: " + contentType);
         String result = HTTPUtils.post(sUrl.toString(), sldFile, contentType, gsuser, gspass);
         return result != null;
@@ -360,10 +356,7 @@ public class GeoServerRESTStyleManager extends GeoServerRESTAbstractManager {
         
         StringBuilder sUrl = new StringBuilder(buildUrl(null, name, null));
         Util.appendParameter(sUrl, "raw", ""+raw);
-        String contentType = GeoServerRESTPublisher.Format.SLD.getContentType();
-        if(!this.checkSLD10Version(sldFile)){
-            contentType = GeoServerRESTPublisher.Format.SLD_1_1_0.getContentType();
-        }
+        String contentType = getContentType(sldFile);
         LOGGER.debug("PUTting style " + name + " to " + sUrl + " using version: " + contentType);
         String result = HTTPUtils.put(sUrl.toString(), sldFile, contentType, gsuser, gspass);
         return result != null;
@@ -395,10 +388,7 @@ public class GeoServerRESTStyleManager extends GeoServerRESTAbstractManager {
         
         StringBuilder sUrl = new StringBuilder(buildUrl(null, name, null));
         Util.appendParameter(sUrl, "raw", ""+raw);
-        String contentType = GeoServerRESTPublisher.Format.SLD.getContentType();
-        if(!this.checkSLD10Version(sldBody)){
-            contentType = GeoServerRESTPublisher.Format.SLD_1_1_0.getContentType();
-        }
+        String contentType = getContentType(sldBody);
         LOGGER.debug("PUTting style " + name + " to " + sUrl + " using version: " + contentType);
         String result = HTTPUtils.put(sUrl.toString(), sldBody, contentType, gsuser, gspass);
         return result != null;
@@ -554,7 +544,8 @@ public class GeoServerRESTStyleManager extends GeoServerRESTAbstractManager {
             throw new IllegalArgumentException("The style body may not be null or empty");
         }
         String sUrl = buildPostUrl(workspace, name);
-        final String result = HTTPUtils.post(sUrl, sldBody, "application/vnd.ogc.sld+xml", gsuser, gspass);
+        String contentType = getContentType(sldBody);
+        final String result = HTTPUtils.post(sUrl, sldBody, contentType, gsuser, gspass);
         return result != null;
     }
 
@@ -582,7 +573,8 @@ public class GeoServerRESTStyleManager extends GeoServerRESTAbstractManager {
     public boolean publishStyleInWorkspace(final String workspace, File sldFile, String name) {
         String sUrl = buildPostUrl(workspace, name);
         LOGGER.debug("POSTing new style " + name + " to " + sUrl);
-        String result = HTTPUtils.post(sUrl, sldFile, GeoServerRESTPublisher.Format.SLD.getContentType(), gsuser, gspass);
+        String contentType = getContentType(sldFile);
+        String result = HTTPUtils.post(sUrl, sldFile, contentType, gsuser, gspass);
         return result != null;
     }
 
@@ -774,7 +766,7 @@ public class GeoServerRESTStyleManager extends GeoServerRESTAbstractManager {
         }
         return result;
     }
-    
+
     private boolean checkSLD10Version(Document doc) {
         boolean result = false;
         try {
@@ -787,5 +779,20 @@ public class GeoServerRESTStyleManager extends GeoServerRESTAbstractManager {
         }
         return result;
     }
-    
+
+    private String getContentType(String sldBody) {
+        String contentType = GeoServerRESTPublisher.Format.SLD.getContentType();
+        if (!this.checkSLD10Version(sldBody)) {
+            contentType = GeoServerRESTPublisher.Format.SLD_1_1_0.getContentType();
+        }
+        return contentType;
+    }
+
+    private String getContentType(File sldFile) {
+        String contentType = GeoServerRESTPublisher.Format.SLD.getContentType();
+        if (!this.checkSLD10Version(sldFile)) {
+            contentType = GeoServerRESTPublisher.Format.SLD_1_1_0.getContentType();
+        }
+        return contentType;
+    }
 }
