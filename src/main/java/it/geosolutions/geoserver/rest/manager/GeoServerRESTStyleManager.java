@@ -418,8 +418,9 @@ public class GeoServerRESTStyleManager extends GeoServerRESTAbstractManager {
         }
 
         final String sUrl = buildUrl(null, name, null);
+        String contentType = getContentType(sldBody);
 
-        final String result = HTTPUtils.put(sUrl, sldBody, "application/vnd.ogc.sld+xml", gsuser, gspass);
+        final String result = HTTPUtils.put(sUrl, sldBody, contentType, gsuser, gspass);
         return result != null;
     }
 
@@ -442,9 +443,9 @@ public class GeoServerRESTStyleManager extends GeoServerRESTAbstractManager {
         }
 
         final String sUrl = buildUrl(null, name, null);
+        String contentType = getContentType(sldFile);
 
-        final String result = HTTPUtils.put(sUrl, sldFile,
-                "application/vnd.ogc.sld+xml", gsuser, gspass);
+        final String result = HTTPUtils.put(sUrl, sldFile, contentType, gsuser, gspass);
         return result != null;
 
     }
@@ -597,9 +598,9 @@ public class GeoServerRESTStyleManager extends GeoServerRESTAbstractManager {
         }
 
         final String sUrl = buildUrl(workspace, name, null);
+        String contentType = getContentType(sldBody);
 
-        final String result = HTTPUtils.put(sUrl, sldBody,
-                "application/vnd.ogc.sld+xml", gsuser, gspass);
+        final String result = HTTPUtils.put(sUrl, sldBody, contentType, gsuser, gspass);
         return result != null;
     }
 
@@ -623,9 +624,9 @@ public class GeoServerRESTStyleManager extends GeoServerRESTAbstractManager {
         }
 
         final String sUrl = buildUrl(workspace, name, null);
+        String contentType = getContentType(sldFile);
 
-        final String result = HTTPUtils.put(sUrl, sldFile,
-                "application/vnd.ogc.sld+xml", gsuser, gspass);
+        final String result = HTTPUtils.put(sUrl, sldFile, contentType, gsuser, gspass);
         return result != null;
     }
 
