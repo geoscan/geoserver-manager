@@ -417,7 +417,8 @@ public class GeoServerRESTStyleManager extends GeoServerRESTAbstractManager {
             throw new IllegalArgumentException("The style name may not be null or empty");
         }
 
-        final String sUrl = buildUrl(null, name, null);
+        String sUrl = buildUrl(null, name, null);
+        sUrl = addParametersForSLD1_1_0Version(sldBody, sUrl);
         String contentType = getContentType(sldBody);
 
         final String result = HTTPUtils.put(sUrl, sldBody, contentType, gsuser, gspass);
@@ -597,14 +598,15 @@ public class GeoServerRESTStyleManager extends GeoServerRESTAbstractManager {
             throw new IllegalArgumentException("The style name may not be null or empty");
         }
 
-        final String sUrl = buildUrl(workspace, name, null);
+        String sUrl = buildUrl(workspace, name, null);
+        sUrl = addParametersForSLD1_1_0Version(sldBody, sUrl);
         String contentType = getContentType(sldBody);
 
         final String result = HTTPUtils.put(sUrl, sldBody, contentType, gsuser, gspass);
         return result != null;
     }
 
-    /**
+	/**
      * Update a Style.
      *
      * @param sldFile the File containing the SLD document.
@@ -795,5 +797,12 @@ public class GeoServerRESTStyleManager extends GeoServerRESTAbstractManager {
             contentType = GeoServerRESTPublisher.Format.SLD_1_1_0.getContentType();
         }
         return contentType;
+    }
+
+    private String addParametersForSLD1_1_0Version(String sldBody, String sUrl) {
+        if (!this.checkSLD10Version(sldBody)) {
+            sUrl += "?raw=true";
+        }
+        return sUrl;
     }
 }
