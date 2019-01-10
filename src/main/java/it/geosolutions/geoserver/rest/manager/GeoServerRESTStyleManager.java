@@ -600,7 +600,7 @@ public class GeoServerRESTStyleManager extends GeoServerRESTAbstractManager {
 
         String sUrl = buildUrl(workspace, name, null);
         sUrl = addParametersForSLD1_1_0Version(sldBody, sUrl);
-        String contentType = getContentType(sldBody);
+        String contentType = "application/xml";
 
         final String result = HTTPUtils.put(sUrl, sldBody, contentType, gsuser, gspass);
         return result != null;
