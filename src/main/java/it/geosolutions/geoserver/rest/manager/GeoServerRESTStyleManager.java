@@ -546,6 +546,7 @@ public class GeoServerRESTStyleManager extends GeoServerRESTAbstractManager {
             throw new IllegalArgumentException("The style body may not be null or empty");
         }
         String sUrl = buildPostUrl(workspace, name);
+        sUrl += "?raw=true";
         String contentType = getContentType(sldBody);
         final String result = HTTPUtils.post(sUrl, sldBody, contentType, gsuser, gspass);
         return result != null;
@@ -599,8 +600,8 @@ public class GeoServerRESTStyleManager extends GeoServerRESTAbstractManager {
         }
 
         String sUrl = buildUrl(workspace, name, null);
-        sUrl = addParametersForSLD1_1_0Version(sldBody, sUrl);
-        String contentType = "application/xml";
+        sUrl = sUrl += "?raw=true";
+        String contentType = getContentType(sldBody);
 
         final String result = HTTPUtils.put(sUrl, sldBody, contentType, gsuser, gspass);
         return result != null;
