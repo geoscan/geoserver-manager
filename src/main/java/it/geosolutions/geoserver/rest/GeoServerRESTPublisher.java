@@ -52,12 +52,17 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.ZipFile;
 
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.sf.json.JSONObject;
 
@@ -3318,5 +3323,34 @@ public class GeoServerRESTPublisher {
         cenc.setName(layerName);
         cenc.setEnabled(enabled);
         return recalculateBBox(StoreType.COVERAGESTORES, cenc, workspace, storeName, layerName, calculationMode);
+    }
+
+    public List<String> getLinkedGeoMapUrls(String workspace, String name) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        boolean workspaceIsEmpty = workspace == null || workspace.isEmpty();
+        String url = workspaceIsEmpty ? "/rest/layers" : "/rest/workspaces/" + workspace + "/layers";
+        String layersJson = HTTPUtils.get(restURL + url, gsuser, gspass);
+        JsonNode layers = objectMapper.readTree(layersJson).get("layers").get("layer");
+        List<String> updatingGeoMapsUrls = new ArrayList<>();
+        if (layers != null) {
+            layers.forEach(layer -> {
+                String layerName = layer.get("name").asText();
+                String layerHref = layer.get("href").asText();
+                String layerInfo = HTTPUtils.get(layerHref, gsuser, gspass);
+                String defaultStyle;
+                try {
+                    defaultStyle =
+                            objectMapper.readTree(layerInfo).get("layer").get("defaultStyle").get("name").asText();
+                } catch (IOException e) {
+                    defaultStyle = "";
+                }
+                String styleName = workspaceIsEmpty ? name : workspace + ":" + name;
+                if (defaultStyle.equals(styleName)) {
+                    updatingGeoMapsUrls
+                        .add(workspaceIsEmpty ? layerName.replace(":", ">") : workspace + ">" + layerName);
+                }
+            });
+        }
+        return updatingGeoMapsUrls;
     }
 }
